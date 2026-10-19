@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protektahanan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+        button {
+            font-size: 18px;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .btn-toggle {
+            width: auto;
+            padding: 10px 15px;
+            background-color: #ddd;
+            color: #333;
+            margin-top: 0;
+        }
+        .btn-check {
+            background-color: #0056b3;
+            color: white;
+            font-size: 22px;
+        }
+        .btn-report {
+            background-color: #666;
+            color: white;
+            margin-top: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            font-size: 18px;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            resize: none;
+        }
+        .privacy-notice {
+            font-size: 14px;
+            color: #555;
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        #result-box {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .red { background-color: #ffcccc; border: 3px solid #cc0000; color: #cc0000; }
+        .yellow { background-color: #fff3cd; border: 3px solid #856404; color: #856404; }
+        .green { background-color: #d4edda; border: 3px solid #155724; color: #155724; }
+        
+        .result-title { font-size: 28px; font-weight: bold; margin: 0 0 10px 0; }
+        .result-action { font-size: 20px; font-weight: bold; margin-bottom: 10px;}
+        
+        .tip-box {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 16px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1 id="app-title">Protektahanan</h1>
+        <button class="btn-toggle" onclick="toggleLanguage()" id="lang-btn">Taglish</button>
+    </div>
+
+    <textarea id="input-text" placeholder="Paste message or link here... / I-paste ang message o link dito..."></textarea>
+    
+    <div class="privacy-notice" id="privacy-text">
+        🔒 Safe: This stays on your phone. We don't save your messages.
+    </div>
+
+    <button class="btn-check" onclick="checkThreat()" id="check-btn">Check Message / I-check</button>
+
+    <div id="result-box">
+        <p class="result-title" id="res-title"></p>
+        <p class="result-action" id="res-action"></p>
+    </div>
+
+    <button class="btn-report" onclick="reportScam()" id="report-btn">Report as Scam / I-report</button>
+
+    <div class="tip-box" id="tip-text">
+        💡 Tip: Banks like BDO or GCash will never ask for your password or OTP.
+    </div>
+</div>
+
+<script>
+    let isEnglish = true;
+
+    const dict = {
+        en: {
+            appTitle: "Protektahanan",
+            langBtn: "Taglish",
+            placeholder: "Paste message or link here...",
+            privacy: "🔒 Safe: This stays on your phone. We don't save your messages.",
+            checkBtn: "Check Message",
+            reportBtn: "Report as Scam",
+            redTitle: "🚨 DANGER / SCAM",
+            redAction: "Do not click the link. Delete this message immediately.",
+            yellowTitle: "⚠️ SUSPICIOUS",
+            yellowAction: "Be very careful. Don't give out personal info.",
+            greenTitle: "✅ LOOKS SAFE",
+            greenAction: "Seems okay, but always stay alert.",
+            tip: "💡 Tip: Banks like BDO or GCash will never ask for your password or OTP.",
+            reportAlert: "Reported! Thank you for helping the community."
+        },
+        tg: {
+            appTitle: "Protektahanan",
+            langBtn: "English",
+            placeholder: "I-paste ang message o link dito...",
+            privacy: "🔒 Safe: Hindi namin isi-save ang text mo. Dito lang 'yan sa phone mo.",
+            checkBtn: "I-check ang Message",
+            reportBtn: "I-report na Scam",
+            redTitle: "🚨 DELIKADO / SCAM!",
+            redAction: "Huwag i-click ang link! I-delete ang message na ito agad.",
+            yellowTitle: "⚠️ KAHINA-HINALA",
+            yellowAction: "Mag-ingat. Huwag magbigay ng personal info.",
+            greenTitle: "✅ MUKHANG LIGTAS",
+            greenAction: "Mukhang okay, pero mag-ingat pa rin palagi.",
+            tip: "💡 Tip: Hindi hihingin ng GCash o BDO ang OTP o password mo.",
+            reportAlert: "Na-report na! Salamat sa tulong mo."
+        }
+    };
+
+    function toggleLanguage() {
+        isEnglish = !isEnglish;
+        updateUI();
+    }
+
+    function updateUI() {
+        const lang = isEnglish ? dict.en : dict.tg;
+        document.getElementById('app-title').innerText = lang.appTitle;
+        document.getElementById('lang-btn').innerText = lang.langBtn;
+        document.getElementById('input-text').placeholder = lang.placeholder;
+        document.getElementById('privacy-text').innerText = lang.privacy;
+        document.getElementById('check-btn').innerText = lang.checkBtn;
+        document.getElementById('report-btn').innerText = lang.reportBtn;
+        document.getElementById('tip-text').innerText = lang.tip;
+        
+        // Hide result on language toggle to prevent mismatch state
+        document.getElementById('result-box').style.display = 'none';
+    }
+
+    function checkThreat() {
+        const input = document.getElementById('input-text').value.toLowerCase();
+        const resultBox = document.getElementById('result-box');
+        const resTitle = document.getElementById('res-title');
+        const resAction = document.getElementById('res-action');
+        const lang = isEnglish ? dict.en : dict.tg;
+
+        if (input.trim() === "") return;
+
+        // Local PH Scam Triggers
+        const redKeywords = ['winner', 'nanalo', 'claim your prize', 'account locked', 'verify now', 'bdo-update', 'gcash-alert', 'http://', 'https://', 'bit.ly'];
+        const yellowKeywords = ['urgent', 'important', 'action required', 'bank'];
+
+        let isRed = redKeywords.some(word => input.includes(word));
+        let isYellow = yellowKeywords.some(word => input.includes(word));
+
+        resultBox.style.display = 'block';
+        resultBox.className = ''; 
+
+        if (isRed) {
+            resultBox.classList.add('red');
+            resTitle.innerText = lang.redTitle;
+            resAction.innerText = lang.redAction;
+        } else if (isYellow) {
+            resultBox.classList.add('yellow');
+            resTitle.innerText = lang.yellowTitle;
+            resAction.innerText = lang.yellowAction;
+        } else {
+            resultBox.classList.add('green');
+            resTitle.innerText = lang.greenTitle;
+            resAction.innerText = lang.greenAction;
+        }
+    }
+
+    function reportScam() {
+        const lang = isEnglish ? dict.en : dict.tg;
+        alert(lang.reportAlert);
+        document.getElementById('input-text').value = '';
+        document.getElementById('result-box').style.display = 'none';
+    }
+
+    // Initialize UI
+    updateUI();
+</script>
+
+</body>
+</html>
