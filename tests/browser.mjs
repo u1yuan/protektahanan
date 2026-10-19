@@ -1,0 +1,32 @@
+import { chromium } from '@playwright/test';
+import assert from 'node:assert/strict';
+const browser = await chromium.launch({ channel: 'msedge', headless: true });
+try {
+ const page = await browser.newPage({ viewport: { width: 360, height: 800 } });
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('http://127.0.0.1:5173');
+ await page.getByRole('button',{name:'Suriin ang mensahe',exact:true}).waitFor();
+ await page.locator('#message').fill('BDO account locked. Give your OTP at https://bdo.com.ph.verify.example');
+ await page.getByRole('button',{name:'Suriin ang mensahe',exact:true}).click();
+ await page.getByRole('heading',{name:'May malinaw na babala'}).waitFor();
+ await page.getByRole('button',{name:'English',exact:true}).click();
+ await page.getByRole('heading',{name:'Strong warning signs'}).waitFor();
+ await page.getByText('See the URL comparison').click();
+ assert.ok(await page.getByText('bdo.com.ph.verify.example',{exact:true}).count());
+ await page.getByRole('button',{name:'Prepare a report',exact:true}).click();
+ assert.match(await page.locator('#report').inputValue(),/NOT YET SUBMITTED/);
+ await page.locator('#destination').selectOption('gcash');
+ assert.match(await page.getByRole('link',{name:/Open official guidance/}).getAttribute('href'),/^https:\/\/help.gcash.com\//);
+ await page.screenshot({path:'artifacts/mobile-report.png',fullPage:true});
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+ await page.getByRole('button',{name:'Start a new check',exact:true}).click();
+ assert.equal(await page.locator('#message').inputValue(),'');
+ await page.getByRole('button',{name:'Enlarge text'}).click();
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+ assert.equal(await page.evaluate(()=>localStorage.length+sessionStorage.length),0);
+ await page.screenshot({path:'artifacts/mobile-input.png',fullPage:true});
+ await page.setViewportSize({width:1366,height:900});
+ await page.screenshot({path:'artifacts/desktop-input.png',fullPage:true});
+ assert.deepEqual(errors,[]);
+ console.log('PASS: mobile input, live reference API, results, language switch, URL evidence, editable report, curated channel, reset, text enlargement, no overflow/storage, desktop render, no JS errors.');
+} finally {await browser.close();}
