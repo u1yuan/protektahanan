@@ -28,10 +28,10 @@ The MVP succeeds when a user can understand warning signs in Filipino or English
 
 Provide plain-language Filipino and English labels for these categories:
 
-| Category | Meaning | Required guidance |
-| --- | --- | --- |
-| Strong warning signs | Clear suspicious patterns appear in the content. | Explain the patterns; advise pausing before responding, paying, or sharing information. |
-| Uncertain | Context is insufficient or evidence is ambiguous. | Explain what cannot be established and how to verify independently. |
+| Category                 | Meaning                                                | Required guidance                                                                               |
+| ------------------------ | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| Strong warning signs     | Clear suspicious patterns appear in the content.       | Explain the patterns; advise pausing before responding, paying, or sharing information.         |
+| Uncertain                | Context is insufficient or evidence is ambiguous.      | Explain what cannot be established and how to verify independently.                             |
 | No obvious warning signs | The supplied text reveals no clear suspicious pattern. | Explain that this does not prove authenticity; recommend verification before sensitive actions. |
 
 Do not show unsupported accuracy claims, certainty percentages, or a guaranteed-safe verdict. A call description can reveal warning signs but cannot authenticate the caller. Do not invent events, losses, or sender identities.
@@ -80,18 +80,18 @@ No accounts, database, saved report history, automatic call interception, sender
 
 These are future implementation checks, not completed test results.
 
-| Scenario | Pass condition |
-| --- | --- |
-| Live analysis | An entered message completes a real browser-to-server-to-AI round trip and renders a structured assessment. |
-| Suspicious content | Clear warning signs receive relevant explanations and safe next steps without unsupported sender-identity claims. |
-| Ambiguous content | Limited context produces honest uncertainty and independent-verification guidance. |
-| Ordinary content | Results never declare the message guaranteed safe or authenticated. |
-| Malicious embedded instructions | Submitted instructions cannot override analysis, trigger link fetching, or cause secret disclosure. |
-| Both languages | Controls, results, errors, privacy copy, and reporting guidance use the selected language. |
-| Accessibility | The main journey works on narrow mobile screens, with keyboard input and enlarged text; contrast and touch targets meet the stated requirements. |
-| Failure recovery | Empty input and simulated timeout, unavailable-service, and malformed-output failures show recovery actions without fake assessments. |
-| Reporting | The summary reflects supplied facts, supports copying, and points to a verified official destination without implying submission. |
-| Privacy and secrets | Browser bundles and traffic expose no AI credentials; application storage and logs contain no submitted message bodies or findings. |
+| Scenario                        | Pass condition                                                                                                                                   |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Live analysis                   | An entered message completes a real browser-to-server-to-AI round trip and renders a structured assessment.                                      |
+| Suspicious content              | Clear warning signs receive relevant explanations and safe next steps without unsupported sender-identity claims.                                |
+| Ambiguous content               | Limited context produces honest uncertainty and independent-verification guidance.                                                               |
+| Ordinary content                | Results never declare the message guaranteed safe or authenticated.                                                                              |
+| Malicious embedded instructions | Submitted instructions cannot override analysis, trigger link fetching, or cause secret disclosure.                                              |
+| Both languages                  | Controls, results, errors, privacy copy, and reporting guidance use the selected language.                                                       |
+| Accessibility                   | The main journey works on narrow mobile screens, with keyboard input and enlarged text; contrast and touch targets meet the stated requirements. |
+| Failure recovery                | Empty input and simulated timeout, unavailable-service, and malformed-output failures show recovery actions without fake assessments.            |
+| Reporting                       | The summary reflects supplied facts, supports copying, and points to a verified official destination without implying submission.                |
+| Privacy and secrets             | Browser bundles and traffic expose no AI credentials; application storage and logs contain no submitted message bodies or findings.              |
 
 ## Live-demo sequence
 
@@ -116,4 +116,3 @@ Before pitching, verify the running app, server credentials, connectivity, both 
 - Reporting: guided, user-submitted reporting through verified official channels.
 - Storage: transient application state; no accounts or database for the MVP.
 - Current deliverable: React application, reference checker, optional Gemini adapter, guided reporting, and tests. See README.md for actual setup and verification limitations.
-
